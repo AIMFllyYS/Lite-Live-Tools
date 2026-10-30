@@ -1,5 +1,5 @@
 import { app, Menu, globalShortcut, ipcMain } from 'electron';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { loadSettings, saveSettings, flushSettings } from './store';
 import { state, patchState } from './state';
 import { showMenu, hideMenu, toggleMenu, setMenuScale, setMenuAlpha, menuWindow } from './menu';
@@ -22,8 +22,10 @@ Menu.setApplicationMenu(null);
 app.setAppUserModelId('dev.livebuddy.app');
 
 const selftest = process.argv.includes('--selftest');
+// 自检输出目录：开发时在项目里；打包后 appPath 在只读的 asar 中，改放到 exe 旁边
+const selftestDir = app.isPackaged ? join(dirname(process.execPath), 'selftest') : join(app.getAppPath(), 'selftest');
 // 自检用独立的配置目录，不污染真实设置
-if (selftest) app.setPath('userData', join(app.getAppPath(), 'selftest', 'userData'));
+if (selftest) app.setPath('userData', join(selftestDir, 'userData'));
 const boot = loadSettings();
 
 /*
@@ -82,7 +84,7 @@ function start(): void {
   showMenu();
 
   if (selftest) {
-    void import('./selftest').then((m) => m.runSelftest(join(app.getAppPath(), 'selftest')));
+    void import('./selftest').then((m) => m.runSelftest(selftestDir));
   }
 }
 

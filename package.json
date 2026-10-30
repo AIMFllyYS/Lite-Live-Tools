@@ -1,8 +1,12 @@
 {
-  "name": "livebuddy",
+  "name": "lite-live-tools",
   "productName": "LiveBuddy",
   "version": "0.1.0",
-  "description": "直播小助手：托盘常驻的柔光悬浮菜单、提示画布、标注、鼠标特效",
+  "description": "轻量直播小助手：托盘常驻的柔光悬浮菜单、提示画布、屏幕标注、鼠标特效（Electron + TypeScript）",
+  "author": "AIMFllyYS",
+  "license": "MIT",
+  "homepage": "https://github.com/AIMFllyYS/Lite-Live-Tools",
+  "repository": { "type": "git", "url": "https://github.com/AIMFllyYS/Lite-Live-Tools.git" },
   "private": true,
   "main": "dist/main.js",
   "scripts": {
@@ -10,22 +14,38 @@
     "typecheck": "tsc --noEmit -p .",
     "start": "node scripts/build.mjs && electron .",
     "selftest": "node scripts/build.mjs && electron . --selftest",
-    "dist": "node scripts/build.mjs --prod && electron-builder --win portable"
-  },
-  "dependencies": {
-    "perfect-freehand": "^1.2.2"
+    "icon": "node scripts/make-icon.mjs",
+    "dist": "node scripts/make-icon.mjs && node scripts/build.mjs --prod && electron-builder --win --publish never"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
     "electron": "45.1.0",
+    "electron-builder": "^26.18.0",
     "esbuild": "^0.25.0",
+    "perfect-freehand": "^1.2.2",
     "typescript": "^5.9.0"
   },
   "build": {
-    "appId": "dev.livebuddy.app",
+    "appId": "dev.aimfllyys.litelivetools",
+    "productName": "LiveBuddy",
+    "directories": { "output": "release", "buildResources": "build" },
     "files": ["dist/**", "package.json"],
     "asar": true,
     "electronLanguages": ["zh-CN", "en-US"],
-    "win": { "target": "portable" }
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        { "target": "portable", "arch": ["x64"] },
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "portable": { "artifactName": "Lite-Live-Tools-${version}-portable.exe" },
+    "nsis": {
+      "artifactName": "Lite-Live-Tools-${version}-setup.exe",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "LiveBuddy"
+    }
   }
 }

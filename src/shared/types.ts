@@ -35,7 +35,7 @@ export const SEND_CHANNELS = [
   'agent:interactive',
 ] as const;
 export const ON_CHANNELS = [
-  'state', 'menu:test',
+  'state', 'theme', 'menu:test',
   'board:set-kind', 'board:toggle-draw', 'board:test',
   'fx:modes', 'fx:cursor', 'fx:big', 'fx:test',
   'agent:component', 'agent:status',

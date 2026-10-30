@@ -31,3 +31,20 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
   background: rgba(255,255,255,.06); color: rgba(255,255,255,.6); font-size: 13px; line-height: 20px; opacity: 0; transition: opacity .15s; }
 .comp:hover .x { opacity: 1; }
 iframe { display: block; width: 100%; height: 56px; border: 0; background: transparent; color-scheme: dark; }
+
+
+/* ================= 浅色主题 ================= */
+:root[data-theme="light"] { --accent: 56, 170, 230; --accent2: 140, 120, 240; color-scheme: light; }
+:root[data-theme="light"], :root[data-theme="light"] body { color: rgb(24, 38, 56); }
+:root[data-theme="light"] .head { background: rgba(255,255,255,.94); box-shadow: 0 0 0 1px rgba(20,40,70,.1), 0 4px 14px rgba(30,50,80,.14); }
+:root[data-theme="light"] .name { color: rgb(24, 130, 190); }
+:root[data-theme="light"] .said { color: rgb(70, 86, 106); }
+:root[data-theme="light"] .comp {
+  background: linear-gradient(160deg, rgba(255,255,255,.95), rgba(240, 245, 251, .95));
+  box-shadow: 0 0 0 1px rgba(20,40,70,.08), 0 10px 26px rgba(30,50,80,.16), 0 0 22px rgba(var(--accent), .10);
+}
+:root[data-theme="light"] .t { color: rgb(24, 130, 190); }
+:root[data-theme="light"] .b { color: rgb(24, 38, 56); }
+:root[data-theme="light"] .v { color: rgb(16, 30, 50); text-shadow: 0 0 16px rgba(var(--accent), .3); }
+:root[data-theme="light"] .x { background: rgba(20,40,70,.06); color: rgba(20,40,70,.55); }
+:root[data-theme="light"] iframe { color-scheme: light; }

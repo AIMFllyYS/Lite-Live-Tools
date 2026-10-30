@@ -1,5 +1,5 @@
 import { ipcMain, screen, type BrowserWindow } from 'electron';
-import { overlayWindow, page, from, clamp } from './common';
+import { overlayWindow, loadPage, from, clamp } from './common';
 import { settings, saveSettings } from './store';
 import { state, onState, patchState } from './state';
 import type { Edge } from '../shared/types';
@@ -29,7 +29,7 @@ export function showMenu(): void {
   // 关键：默认整窗穿透，但把 mousemove 转发给页面，页面自己判断是否落在按钮上
   win.setIgnoreMouseEvents(true, { forward: true });
   interactive = false;
-  win.loadFile(page('menu'));
+  loadPage(win, 'menu');
   win.webContents.on('did-finish-load', pushState);
   win.once('ready-to-show', () => win?.showInactive());
   win.on('closed', () => { win = null; interactive = false; stopDrag(); });

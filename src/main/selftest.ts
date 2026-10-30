@@ -7,6 +7,7 @@ import { setFxModes, fxWindow } from './fx';
 import { toggleAgent, agentWindow } from './agent/panel';
 import { memoryMB } from './tray';
 import { ShakeDetector } from './shake';
+import { setTheme } from './theme';
 
 /**
  * 自检：跑一遍所有窗口，截图、测穿透、量内存，写 selftest/report.json 后退出。
@@ -70,6 +71,16 @@ export async function runSelftest(out: string): Promise<void> {
     await probe(100, 100 - 68); // 停在按钮上，截图带悬停态
     await wait(300);
     await shot(m, 'menu-expanded');
+    {
+      const js = 'document.documentElement.dataset.theme';
+      const before: string = await m.webContents.executeJavaScript(js);
+      setTheme(before === 'dark' ? 'light' : 'dark');
+      await wait(300);
+      const after: string = await m.webContents.executeJavaScript(js);
+      check('主题热切换（不重开窗口）', after !== before && (after === 'dark' || after === 'light'), `${before} → ${after}`);
+      setTheme(before as 'dark' | 'light');
+      await wait(300);
+    }
     await probe(4, 4);
     mem.menuExpanded = memoryMB();
 

@@ -1,3 +1,4 @@
+import '../shared/theme';
 import { clickThrough } from '../shared/clickthrough';
 import type { AgentComponentSpec, AgentStatus } from '../../shared/types';
 

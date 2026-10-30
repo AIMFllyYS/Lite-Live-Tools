@@ -1,13 +1,14 @@
 import { app, Menu, Tray, type MenuItemConstructorOptions } from 'electron';
 import { makeTrayIcon } from './icon';
 import { state } from './state';
-import { settings } from './store';
+import { settings, type ThemeMode } from './store';
 
 export interface TrayHandlers {
   toggleMenu(): void;
   action(a: 'prompt' | 'annotate' | 'agent' | 'fx:shake' | 'fx:spotlight' | 'fx:laser'): void;
   setScale(s: number): void;
   setAlpha(a: number): void;
+  setTheme(mode: ThemeMode): void;
   gpu: boolean;
   setGpu(on: boolean): void;
   quit(): void;
@@ -53,6 +54,8 @@ function build(h: TrayHandlers): Menu {
     ] },
     { label: 'Agent 面板（实验）', type: 'checkbox', checked: state.agent, click: () => h.action('agent') },
     { type: 'separator' },
+    { label: '主题', submenu: ([['dark', '深色'], ['light', '浅色'], ['system', '跟随系统']] as [ThemeMode, string][]).map(([v, l]) => ({
+      label: l, type: 'radio' as const, checked: s.theme === v, click: () => h.setTheme(v) })) },
     { label: '菜单大小', submenu: scales.map((v) => ({
       label: `${Math.round(v * 100)}%`, type: 'radio' as const, checked: Math.abs(s.scale - v) < 0.05, click: () => h.setScale(v) })) },
     { label: '菜单不透明度', submenu: alphas.map((v) => ({

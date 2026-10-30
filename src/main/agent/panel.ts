@@ -1,5 +1,5 @@
 import { ipcMain, screen, type BrowserWindow } from 'electron';
-import { overlayWindow, page, from } from '../common';
+import { overlayWindow, loadPage, from } from '../common';
 import { patchState } from '../state';
 import { createBridge, type AgentBridge } from './bridge';
 
@@ -16,7 +16,7 @@ function openAgent(): void {
   const W = 380, H = 360;
   win = overlayWindow({ width: W, height: H, x: wa.x + 16, y: wa.y + wa.height - H - 16, focusable: false });
   win.setIgnoreMouseEvents(true, { forward: true });
-  win.loadFile(page('agent'));
+  loadPage(win, 'agent');
   win.once('ready-to-show', () => win?.showInactive());
   win.webContents.once('did-finish-load', () => {
     try { bridge = createBridge(); } catch { bridge = null; return; }

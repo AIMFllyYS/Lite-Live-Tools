@@ -7,6 +7,7 @@ import { openBoard, closeBoard, toggleBoardDraw } from './board';
 import { setFxModes } from './fx';
 import { toggleAgent } from './agent/panel';
 import { createTray } from './tray';
+import { initTheme, setTheme } from './theme';
 import type { MenuAction } from '../shared/types';
 
 // ---- 启动前：关掉用不到的 Chromium 功能，少起后台任务 ----
@@ -54,6 +55,7 @@ function handleAction(a: MenuAction): void {
 
 function start(): void {
   const s = boot;
+  initTheme(process.env.LB_THEME); // LB_THEME 只给自检用
   patchState({ alpha: s.alpha, scale: s.scale });
 
   ipcMain.on('menu:action', (e, a: MenuAction) => {
@@ -66,6 +68,7 @@ function start(): void {
     action: handleAction,
     setScale: setMenuScale,
     setAlpha: setMenuAlpha,
+    setTheme,
     gpu: useGpu,
     setGpu: (on: boolean) => { saveSettings({ gpu: on }); flushSettings(); app.relaunch(); app.exit(0); },
     quit: () => app.quit(),

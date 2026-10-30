@@ -1,3 +1,5 @@
+import '../shared/theme';
+import { theme, type Theme } from '../shared/theme';
 import type { FxModes } from '../../shared/types';
 
 /**
@@ -14,7 +16,14 @@ const ctx = cv.getContext('2d')!;
 const TAU = Math.PI * 2;
 const SPOT_R = 150;
 const TRAIL_MS = 320;
-const DIM = 'rgba(4, 6, 12, 0.62)';
+
+/** 两套主题的特效配色：浅色是"白雾聚光 + 黑色大光标"（同 Windows 黑色指针方案）。 */
+const PAL: Record<Theme, { dim: string; ring: string; cursorFill: string; cursorStroke: string; cursorGlow: string }> = {
+  dark: { dim: 'rgba(4, 6, 12, 0.62)', ring: 'rgba(134, 233, 255, 0.28)', cursorFill: '#ffffff', cursorStroke: '#0b0f18', cursorGlow: 'rgba(134, 233, 255, 0.7)' },
+  light: { dim: 'rgba(236, 241, 247, 0.72)', ring: 'rgba(14, 154, 216, 0.35)', cursorFill: '#111827', cursorStroke: '#ffffff', cursorGlow: 'rgba(14, 154, 216, 0.55)' },
+};
+let pal = PAL[theme()];
+addEventListener('themechange', (e) => { pal = PAL[(e as CustomEvent<Theme>).detail]; full = true; kick(); });
 
 interface Rect { x: number; y: number; w: number; h: number }
 const EMPTY: Rect = { x: 0, y: 0, w: 0, h: 0 };
@@ -92,7 +101,7 @@ function frame(now: number): void {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.beginPath(); ctx.rect(dx, dy, dw, dh); ctx.clip();
     ctx.clearRect(dx, dy, dw, dh);
-    if (modes.spotlight) { ctx.fillStyle = DIM; ctx.fillRect(dx, dy, dw, dh); }
+    if (modes.spotlight) { ctx.fillStyle = pal.dim; ctx.fillRect(dx, dy, dw, dh); }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if (modes.spotlight) drawSpotHole();
     if (modes.laser) drawLaser(now);
@@ -113,7 +122,7 @@ function drawSpotHole(): void {
   ctx.fillStyle = g;
   ctx.beginPath(); ctx.arc(x, y, SPOT_R, 0, TAU); ctx.fill();
   ctx.globalCompositeOperation = 'source-over';
-  ctx.strokeStyle = 'rgba(134, 233, 255, 0.28)';
+  ctx.strokeStyle = pal.ring;
   ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.arc(x, y, SPOT_R * 0.86, 0, TAU); ctx.stroke();
 }
@@ -149,14 +158,14 @@ function drawBigCursor(cx: number, cy: number, s: number): void {
   ctx.beginPath();
   CURSOR.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
   ctx.closePath();
-  ctx.shadowColor = 'rgba(134, 233, 255, 0.7)';
+  ctx.shadowColor = pal.cursorGlow;
   ctx.shadowBlur = 10;
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = pal.cursorFill;
   ctx.fill();
   ctx.shadowBlur = 0;
   ctx.lineJoin = 'round';
   ctx.lineWidth = 1.3 / Math.max(1, k * 0.6);
-  ctx.strokeStyle = '#0b0f18';
+  ctx.strokeStyle = pal.cursorStroke;
   ctx.stroke();
   ctx.restore();
 }

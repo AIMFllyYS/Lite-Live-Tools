@@ -9,9 +9,11 @@ export interface Settings {
   alpha: number;
   boardBg: number;
   gpu: boolean;     // GPU 加速，默认关（见 index.ts 的测量说明）
+  theme: ThemeMode;
   asrKeyEnc?: string; // safeStorage 加密后的 base64
 }
-const DEFAULTS: Settings = { scale: 1, alpha: 0.8, boardBg: 0.35, gpu: false };
+export type ThemeMode = 'dark' | 'light' | 'system';
+const DEFAULTS: Settings = { scale: 1, alpha: 0.8, boardBg: 0.35, gpu: false, theme: 'dark' };
 
 let file = '';
 let data: Settings = { ...DEFAULTS };

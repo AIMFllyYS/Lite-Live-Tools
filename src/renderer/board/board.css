@@ -83,3 +83,34 @@ body.drawing.tool-eraser { cursor: cell; }
 .txt { position: fixed; min-width: 40px; padding: 2px 4px; border: 0; outline: none; border-radius: 6px;
   background: rgba(10, 14, 24, .35); box-shadow: 0 0 0 1px rgba(var(--accent), .5);
   font: 700 28px/1.2 "Microsoft YaHei UI", system-ui, sans-serif; caret-color: #fff; }
+
+
+/* ================= 浅色主题 ================= */
+:root[data-theme="light"] { --accent: 56, 170, 230; --accent2: 140, 120, 240; color-scheme: light; }
+:root[data-theme="light"], :root[data-theme="light"] body { color: rgb(24, 38, 56); }
+:root[data-theme="light"] .bg { background: rgb(236, 241, 247); }
+:root[data-theme="light"] .bar {
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(240, 244, 250, .95));
+  box-shadow: 0 0 0 1px rgba(20,40,70,.10), 0 10px 30px rgba(30,50,80,.18), 0 0 26px rgba(var(--accent), .14);
+}
+:root[data-theme="light"] .sep { background: rgba(20,40,70,.12); }
+:root[data-theme="light"] .btn { color: rgb(52, 68, 88); }
+:root[data-theme="light"] .btn:hover { background: rgba(20,40,70,.06); color: rgb(14, 26, 42); }
+:root[data-theme="light"] .btn.on { color: #fff; background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.5), rgba(var(--accent), 1) 62%); box-shadow: 0 0 12px rgba(var(--accent), .5); }
+:root[data-theme="light"] .mode.pass .dot { background: #9aa8b8; }
+:root[data-theme="light"] .sw { box-shadow: 0 0 0 1px rgba(20,40,70,.15), 0 0 6px var(--c); }
+:root[data-theme="light"] .sw.on { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px rgb(30, 50, 80), 0 0 10px var(--c); }
+:root[data-theme="light"] .wd i { background: rgb(52, 68, 88); }
+:root[data-theme="light"] .wd.on { background: rgba(20,40,70,.08); }
+:root[data-theme="light"] .range { background: rgba(20,40,70,.14); }
+:root[data-theme="light"] .range::-webkit-slider-thumb { background: rgb(var(--accent)); box-shadow: 0 0 0 2px #fff, 0 0 8px rgba(var(--accent), .7); }
+:root[data-theme="light"] .tip { background: rgba(255,255,255,.95); color: rgb(24, 38, 56); box-shadow: 0 0 0 1px rgba(20,40,70,.1), 0 4px 12px rgba(30,50,80,.15); }
+:root[data-theme="light"] .chip { color: rgb(30, 46, 66); background: rgba(255,255,255,.92); box-shadow: 0 0 0 1px rgba(20,40,70,.12), 0 4px 10px rgba(30,50,80,.10); }
+:root[data-theme="light"] .chip:hover { background: #fff; box-shadow: 0 0 0 1px rgba(var(--accent), .6), 0 0 14px rgba(var(--accent), .25); }
+:root[data-theme="light"] .card {
+  background: linear-gradient(160deg, rgba(255,255,255,.88), rgba(238, 243, 250, .9));
+  box-shadow: 0 0 0 1px rgba(20,40,70,.08), 0 30px 80px rgba(30,50,80,.22), 0 0 60px rgba(var(--accent), .14);
+}
+:root[data-theme="light"] .card-text { color: rgb(18, 32, 52); text-shadow: 0 0 22px rgba(var(--accent), .35); }
+:root[data-theme="light"] .card-sub { color: rgb(24, 130, 190); text-shadow: 0 0 12px rgba(var(--accent), .35); }
+:root[data-theme="light"] .txt { background: rgba(255,255,255,.6); }

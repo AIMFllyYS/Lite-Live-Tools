@@ -1,3 +1,4 @@
+import '../shared/theme';
 import { clickThrough } from '../shared/clickthrough';
 import { I } from '../shared/icons';
 import type { AppState, MenuAction } from '../../shared/types';

@@ -1,10 +1,16 @@
 import { app, BrowserWindow, type BrowserWindowConstructorOptions } from 'electron';
 import { join } from 'node:path';
+import { currentTheme } from './theme';
 
 export const isProd = app.isPackaged || process.env.NODE_ENV === 'production';
 /** dist/main.js 所在目录。 */
 export const DIST = __dirname;
 export const page = (name: string): string => join(DIST, 'renderer', name, 'index.html');
+
+/** 加载页面，并把首帧主题带进 URL，页面第一帧就是对的颜色。 */
+export function loadPage(win: BrowserWindow, name: string, query: Record<string, string> = {}): void {
+  void win.loadFile(page(name), { query: { ...query, theme: currentTheme() } });
+}
 
 /**
  * 所有浮层窗口的公共配置：

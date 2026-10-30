@@ -1,5 +1,5 @@
 import { screen, type BrowserWindow } from 'electron';
-import { overlayWindow, page, fitTo } from './common';
+import { overlayWindow, loadPage, fitTo } from './common';
 import { state, patchState } from './state';
 import { ShakeDetector } from './shake';
 import type { FxModes } from '../shared/types';
@@ -36,7 +36,7 @@ function ensure(): void {
   origin = { x: d.bounds.x, y: d.bounds.y };
   win = overlayWindow({ ...d.bounds, focusable: false, enableLargerThanScreen: true });
   win.setIgnoreMouseEvents(true);
-  win.loadFile(page('fx'));
+  loadPage(win, 'fx');
   win.webContents.on('did-finish-load', () => { win?.webContents.send('fx:modes', state.fx); lastX = NaN; });
   win.once('ready-to-show', () => { win?.showInactive(); win?.moveTop(); if (win) fitTo(win, d.bounds); });
   win.on('closed', () => { win = null; stopTimer(); });

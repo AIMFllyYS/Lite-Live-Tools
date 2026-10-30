@@ -1,5 +1,5 @@
 import { ipcMain, screen, type BrowserWindow } from 'electron';
-import { overlayWindow, page, from, clamp, fitTo } from './common';
+import { overlayWindow, loadPage, from, clamp, fitTo } from './common';
 import { settings, saveSettings } from './store';
 import { patchState } from './state';
 import type { BoardKind } from '../shared/types';
@@ -25,7 +25,7 @@ export function openBoard(kind: BoardKind): void {
   full = { ...d.bounds };
   win = overlayWindow({ ...d.bounds, focusable: false, enableLargerThanScreen: true });
   win.setIgnoreMouseEvents(true, { forward: true });
-  win.loadFile(page('board'), { query: { kind, bg: String(settings().boardBg) } });
+  loadPage(win, 'board', { kind, bg: String(settings().boardBg) });
   win.once('ready-to-show', () => { win?.showInactive(); cover(); });
   win.on('resize', cover);
   win.on('closed', () => { win = null; patchState({ board: null }); });

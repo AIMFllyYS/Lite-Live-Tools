@@ -1,3 +1,5 @@
+import '../shared/theme';
+import { theme, type Theme } from '../shared/theme';
 import { getStroke } from 'perfect-freehand';
 import { clickThrough } from '../shared/clickthrough';
 import { I } from '../shared/icons';
@@ -11,7 +13,12 @@ interface Box extends Base { t: 'rect' | 'ellipse' | 'arrow'; x1: number; y1: nu
 interface Txt extends Base { t: 'text'; x: number; y: number; text: string; size: number; tw: number }
 type Shape = Pen | Box | Txt;
 
-const COLORS = ['#ff5d73', '#ffb547', '#ffe066', '#7cf29a', '#86e9ff', '#b9a2ff', '#ffffff'];
+// 同一位置的颜色在两套主题里对应：浅色背景上用更深的色相，白色换成墨黑
+const PALETTE: Record<Theme, string[]> = {
+  dark: ['#ff5d73', '#ffb547', '#ffe066', '#7cf29a', '#86e9ff', '#b9a2ff', '#ffffff'],
+  light: ['#ef4058', '#f08a00', '#e0b000', '#1fb35a', '#0e9ad8', '#7c5cf0', '#1f2937'],
+};
+const COLORS = [...PALETTE[theme()]];
 const WIDTHS = [3, 6, 11];
 const FADE_HOLD = 2200, FADE_DUR = 700;
 const TAU = Math.PI * 2;
@@ -59,6 +66,10 @@ function resize(): void {
 addEventListener('resize', resize);
 
 const fontOf = (size: number) => `700 ${size}px "Microsoft YaHei UI", "Segoe UI Variable Display", system-ui, sans-serif`;
+const withAlpha = (hex: string, a: number) => {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+};
 
 function penPath(s: Pen): Path2D {
   const o = getStroke(s.pts, { size: s.w * 2.2, thinning: 0.55, smoothing: 0.55, streamline: 0.45, simulatePressure: s.sim });
@@ -79,8 +90,10 @@ function drawShape(ctx: CanvasRenderingContext2D, s: Shape, alpha = 1): void {
   ctx.lineWidth = s.w;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.shadowColor = s.color;   // 柔光
-  ctx.shadowBlur = 12;
+  // 柔光：浅色背景上同色大光晕会发脏，改成半透明的小光晕
+  const light = document.documentElement.dataset.theme === 'light';
+  ctx.shadowColor = light ? withAlpha(s.color, 0.38) : s.color;
+  ctx.shadowBlur = light ? 7 : 12;
   switch (s.t) {
     case 'pen':
       if (!s.path) s.path = penPath(s);
@@ -444,16 +457,25 @@ window.lb.on('board:test', () => {
   const pts: number[][] = [];
   for (let i = 0; i <= 60; i++) pts.push([cx - 220 + i * 7, cy + 150 + Math.sin(i / 6) * 26, 0.5]);
   shapes = [
-    { t: 'rect', x1: cx - 230, y1: cy - 120, x2: cx + 210, y2: cy + 90, color: '#86e9ff', w: 6, born: now },
-    { t: 'ellipse', x1: W * 0.62, y1: H * 0.3, x2: W * 0.8, y2: H * 0.52, color: '#ffe066', w: 6, born: now },
-    { t: 'arrow', x1: W * 0.56, y1: H * 0.68, x2: W * 0.66, y2: H * 0.55, color: '#ff5d73', w: 6, born: now },
-    { t: 'pen', pts, sim: true, color: '#7cf29a', w: 6, born: now, path: null },
-    { t: 'text', x: cx - 200, y: cy - 60, text: '这里是重点', size: 46, tw: 240, color: '#ffffff', w: 0, born: now },
+    { t: 'rect', x1: cx - 230, y1: cy - 120, x2: cx + 210, y2: cy + 90, color: COLORS[4]!, w: 6, born: now },
+    { t: 'ellipse', x1: W * 0.62, y1: H * 0.3, x2: W * 0.8, y2: H * 0.52, color: COLORS[2]!, w: 6, born: now },
+    { t: 'arrow', x1: W * 0.56, y1: H * 0.68, x2: W * 0.66, y2: H * 0.55, color: COLORS[0]!, w: 6, born: now },
+    { t: 'pen', pts, sim: true, color: COLORS[3]!, w: 6, born: now, path: null },
+    { t: 'text', x: cx - 200, y: cy - 60, text: '这里是重点', size: 46, tw: 240, color: COLORS[6]!, w: 0, born: now },
   ];
   renderAll();
 });
 
 resize();
 applyKind(kind);
+// 切换主题：色板换成对应主题的同位颜色，当前选中色跟着换（已画的图形保持原色）
+addEventListener('themechange', (e) => {
+  const next = PALETTE[(e as CustomEvent<Theme>).detail];
+  const idx = COLORS.indexOf(color);
+  next.forEach((c, i) => { COLORS[i] = c; swatches[i]!.style.setProperty('--c', c); });
+  if (idx >= 0) color = COLORS[idx]!;
+  renderAll();
+  syncBar();
+});
 // 工具条换行后高度会变，预设栏跟着下移
 new ResizeObserver(() => document.documentElement.style.setProperty('--bar-h', `${bar.offsetHeight}px`)).observe(bar);

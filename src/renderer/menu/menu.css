@@ -1,0 +1,111 @@
+/* 悬浮菜单：磨砂暗色玻璃球 + 青紫柔光。只动 transform/opacity，全部走合成层。 */
+:root {
+  --accent: 134, 233, 255;   /* 冰青 */
+  --accent2: 185, 162, 255;  /* 淡紫 */
+  --alpha: .8;
+  --s: 1;
+  color-scheme: dark;
+}
+html, body {
+  margin: 0; width: 100%; height: 100%;
+  background: transparent; overflow: hidden;
+  user-select: none; -webkit-user-select: none;
+  font: 500 11px/1.2 "Segoe UI Variable Text", "Microsoft YaHei UI", system-ui, sans-serif;
+}
+.stage {
+  position: absolute; left: 50%; top: 50%;
+  width: 200px; height: 200px; margin: -100px 0 0 -100px;
+  transform: scale(var(--s));
+  opacity: var(--alpha);
+  transition: opacity .25s ease;
+  pointer-events: none;           /* 舞台本身不是实体，只有 [data-hit] 才是 */
+}
+.stage:has([data-hit]:hover), .stage.open { opacity: max(var(--alpha), .96); }
+
+/* 呼吸光晕：独立一层，永远 pointer-events:none */
+.halo {
+  position: absolute; left: 56px; top: 56px; width: 88px; height: 88px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--accent), .42) 0%, rgba(var(--accent2), .16) 42%, transparent 70%);
+  animation: breathe 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.idle .halo { animation-play-state: paused; opacity: .35; }
+.open .halo { transform: scale(1.9); opacity: .55; animation: none; transition: transform .4s ease, opacity .4s ease; }
+@keyframes breathe {
+  0%, 100% { transform: scale(.86); opacity: .5; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+button { font: inherit; color: inherit; border: 0; padding: 0; margin: 0; outline: none; cursor: pointer; }
+
+.core {
+  position: absolute; left: 78px; top: 78px; width: 44px; height: 44px; border-radius: 50%;
+  pointer-events: auto;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255,255,255,.55), rgba(255,255,255,.08) 34%, transparent 55%),
+    radial-gradient(circle at 50% 65%, rgba(68, 88, 128, .82), rgba(14, 18, 30, .92) 74%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.22),
+    inset 0 -6px 12px rgba(var(--accent), .18),
+    0 6px 16px rgba(0,0,0,.38),
+    0 0 18px rgba(var(--accent), .38);
+  transition: transform .2s cubic-bezier(.2,.9,.3,1.3), box-shadow .25s;
+  display: grid; place-items: center;
+}
+.core:hover { transform: scale(1.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.32), inset 0 -6px 12px rgba(var(--accent), .26), 0 6px 16px rgba(0,0,0,.38), 0 0 26px rgba(var(--accent), .6); }
+.core:active { transform: scale(.95); }
+.glyph { width: 18px; height: 18px; fill: rgba(240, 252, 255, .95); filter: drop-shadow(0 0 4px rgba(var(--accent), .9)); transition: transform .35s ease; }
+.open .glyph { transform: rotate(45deg) scale(.9); }
+
+/* 展开时绕核心旋转的一道流光 */
+.core-spin {
+  position: absolute; inset: -3px; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0 62%, rgba(var(--accent), .9) 78%, rgba(var(--accent2), .8) 88%, transparent 100%);
+  -webkit-mask: radial-gradient(circle, transparent 23px, #000 23.5px, #000 25px, transparent 25.5px);
+  transition: opacity .3s;
+}
+.open .core-spin { opacity: 1; animation: spin 2.6s linear infinite; }
+.idle .core-spin { animation-play-state: paused; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 环形子按钮 */
+.item {
+  position: absolute; left: 83px; top: 83px; width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: rgba(230, 246, 255, .92);
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255,255,255,.34), transparent 46%),
+    radial-gradient(circle at 50% 70%, rgba(44, 56, 82, .86), rgba(16, 20, 32, .92) 76%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 4px 12px rgba(0,0,0,.35);
+  opacity: 0; transform: translate(0, 0) scale(.3);
+  pointer-events: none;
+  transition: transform .36s cubic-bezier(.18,.9,.25,1.25), opacity .22s ease, box-shadow .2s, color .2s;
+  transition-delay: var(--d, 0ms);
+}
+.open .item { opacity: 1; transform: translate(var(--x), var(--y)) scale(1); pointer-events: auto; }
+.item:hover { color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.35), 0 0 16px rgba(var(--accent), .65); }
+.open .item:hover { transform: translate(var(--x), var(--y)) scale(1.1); transition-delay: 0ms; }
+.item.on {
+  color: #04121a;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255,255,255,.7), transparent 50%),
+    radial-gradient(circle at 50% 70%, rgba(var(--accent), .95), rgba(70, 150, 200, .95) 80%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.45), 0 0 18px rgba(var(--accent), .8);
+}
+.item svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 名称气泡 */
+.cap {
+  position: absolute; left: 50%; bottom: 4px; transform: translate(-50%, 4px);
+  padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  color: rgba(225, 246, 255, .96); letter-spacing: .04em;
+  background: rgba(12, 16, 26, .78);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 0 12px rgba(var(--accent), .25);
+  opacity: 0; transition: opacity .15s, transform .15s; pointer-events: none;
+}
+.cap.top { bottom: auto; top: 4px; }
+.cap.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .halo, .core-spin { animation: none !important; }
+}

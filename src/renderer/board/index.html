@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+<link rel="stylesheet" href="board.css">
+</head>
+<body>
+<div id="bg" class="bg"></div>
+<canvas id="c0" class="layer"></canvas>
+<canvas id="c1" class="layer"></canvas>
+
+<div id="card" class="card hidden" data-hit>
+  <div id="cardText" class="card-text" contenteditable="plaintext-only" spellcheck="false">马上回来</div>
+  <div id="cardSub" class="card-sub"></div>
+</div>
+
+<input id="txt" class="txt hidden" spellcheck="false" autocomplete="off">
+
+<div id="bar" class="bar" data-hit></div>
+<div id="presets" class="presets hidden" data-hit></div>
+<script src="board.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+:root { --accent: 134, 233, 255; --accent2: 185, 162, 255; color-scheme: dark; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; user-select: none;
+  font: 500 13px/1.4 "Segoe UI Variable Text", "Microsoft YaHei UI", system-ui, sans-serif; color: #eaf7ff; }
+.wrap { position: absolute; inset: 8px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+.stack { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+
+.head { align-self: flex-start; display: flex; align-items: center; gap: 8px; max-width: 100%;
+  padding: 6px 12px 6px 10px; border-radius: 999px;
+  background: rgba(14, 18, 30, .82); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 0 18px rgba(var(--accent), .18); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #8aa0b8; flex: none; }
+.dot.on { background: #7cf29a; box-shadow: 0 0 8px #7cf29a; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .45; } }
+.name { font-weight: 700; font-size: 12px; color: rgba(var(--accent), 1); flex: none; }
+.said { font-size: 12px; color: rgba(225,240,250,.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.comp { position: relative; padding: 12px 14px; border-radius: 16px;
+  background: linear-gradient(160deg, rgba(34, 44, 66, .82), rgba(14, 18, 30, .88));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 10px 26px rgba(0,0,0,.35), 0 0 22px rgba(var(--accent), .14);
+  animation: pop .42s cubic-bezier(.2,.9,.3,1.2); transform-origin: left bottom; }
+.comp.out { animation: out .3s ease forwards; }
+@keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+@keyframes out { to { opacity: 0; transform: translateX(-12px); } }
+.comp::before { content: ''; position: absolute; left: 14px; right: 40%; top: -1px; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, rgba(var(--accent), .9), rgba(var(--accent2), .7), transparent); }
+.t { font-size: 11px; letter-spacing: .08em; color: rgba(var(--accent), .95); margin-bottom: 4px; }
+.b { font-size: 14px; color: #f2fbff; }
+.v { font: 700 30px/1.1 "Segoe UI Variable Display", system-ui, sans-serif; color: #fff; text-shadow: 0 0 16px rgba(var(--accent), .6); }
+.l { margin: 2px 0 0; padding-left: 18px; }
+.l li { margin: 2px 0; }
+.x { position: absolute; right: 8px; top: 8px; width: 20px; height: 20px; border: 0; border-radius: 50%; padding: 0; cursor: pointer;
+  background: rgba(255,255,255,.06); color: rgba(255,255,255,.6); font-size: 13px; line-height: 20px; opacity: 0; transition: opacity .15s; }
+.comp:hover .x { opacity: 1; }
+iframe { display: block; width: 100%; height: 56px; border: 0; background: transparent; color-scheme: dark; }
